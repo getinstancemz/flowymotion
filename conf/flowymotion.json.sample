@@ -1,0 +1,9 @@
+{
+    "flowymotion": {
+        "atname": "bobby"
+    },
+    "motion": {
+        "apikey": "xxxxxxx", 
+        "workspaceId": "xxxxxxx"
+    }
+}

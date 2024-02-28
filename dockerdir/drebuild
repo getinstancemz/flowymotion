@@ -1,2 +1,2 @@
 docker image rm -f flowymotion
-./build
+./dockerdir/dbuild

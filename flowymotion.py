@@ -125,6 +125,6 @@ class WmConf:
 
 conf = WmConf("conf/flowymotion.json");
 reader = WorkflowyMailReader(conf)
-reader.read_mail("data/workflowy-update2.eml")
+reader.read_mail("samples/workflowy-update2.eml")
 writer = MotionTaskWriter(conf, reader.get_items())
-writer.write_all()
+#writer.write_all()

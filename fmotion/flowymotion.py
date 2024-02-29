@@ -43,6 +43,7 @@ class MotionTaskWriter:
 class WorkflowyMailReader:
     def __init__(self, conf):
         self.items = []
+        self.conf = conf
 
     def read_mail(self, path):
         content = self.readmail(path)
@@ -93,9 +94,11 @@ class WorkflowyMailReader:
                 # 3 colspan == contents (possible context or paydirt)
                 link = tr.td.a['href']
                 span = tr.td.next_sibling.find_all('span')[0]
-                msgstr=span.string
+                # TODO - maybe descend and test all sub spans.
+                # for now we only work with the top span
+                msgstr=span.get_text()
                 # select if @name matches, and the item is marked green (ie added)
-                if (re.search('(\\s|\\b)@'+conf.atname+'(\\b|\\s)', msgstr) and 
+                if (re.search('(\\s|\\b)@'+self.conf.atname+'(\\b|\\s)', msgstr) and 
                    span.has_attr("style") and
                    re.search('#D5F3E5', span['style'])):
                     self.paydirt(link, msgstr, parstrs)
@@ -123,8 +126,4 @@ class WmConf:
         self.workspaceId = conf['motion']['workspaceId']
         self.atname = conf['flowymotion']['atname']
 
-conf = WmConf("conf/flowymotion.json");
-reader = WorkflowyMailReader(conf)
-reader.read_mail("samples/workflowy-update2.eml")
-writer = MotionTaskWriter(conf, reader.get_items())
-#writer.write_all()
+

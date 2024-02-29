@@ -1,1 +1,1 @@
-docker run -it --rm --name flowymotion-container -v "$PWD":/var/flowymotion -w /var/flowymotion flowymotion python3 $1
+docker run -it --rm --name flowymotion-container -v "$PWD":/var/flowymotion -w /var/flowymotion flowymotion python3 $*

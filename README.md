@@ -1,6 +1,6 @@
 # flowymotion
 
-Quick and dirty script to read a Workflowy email (saved as .eml) and to push any new items to Motion with some contextual information.
+Quick and dirty script to read a Workflowy email (saved as .eml) and to push any new items that mention a specific person (identified in a bullet item by a name with a leading `@` character) to Motion with some contextual information.
 
 These instructions assume you're using Docker to run this though of course it's not necessary. You can find required packages in `dockerdir/requirements.txt`.
 

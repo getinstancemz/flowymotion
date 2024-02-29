@@ -32,7 +32,7 @@ cp conf/flowymotion.json.sample conf/flowymotion.json
 
 Edit the new file -- add your API key to the correct field. If you do not yet have a workspace id, leave the dummy in place for now.
 
-Change the `atname` field to the `@name` you wish the script to search for in Workflow reports in order to generate Motion tasks.
+Change the `atname` field to the `@name` you wish the script to search for in Workflow reports in order to generate Motion tasks (do not add `@` in the configuration file -- the script adds that when searching).
 
 ### Build the docker image
 

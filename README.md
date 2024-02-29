@@ -45,7 +45,7 @@ You will only need to do this once (at least until you clear Docker images).
 This will create a Python image and install requirements for the script. Once this is done you will be able to run the python executable with `./bin/drun`.
 
 ### Get a Workspace ID
-If you haven't yet got one of these then the system is half-configured. You can already run the script to get a list of available workspaces if you ahve added you API key.
+If you haven't yet got one of these then the system is half-configured. You can already run the script to get a list of available workspaces if you have added you API key.
 
 The script is named `flowymotion`. Here's how to run it with Docker to get a list of workspaces.
 
@@ -66,7 +66,7 @@ If you want to just check the email parser, then you can run with the dry run fl
 
 
 ```
-./bin/drun flowymotion -e -d samples/workflowy-update1.eml
+./bin/drun flowymotion -d -e samples/workflowy-update1.eml
 ```
 
 This will read the email and compile the tasks but won't write them to Motion.

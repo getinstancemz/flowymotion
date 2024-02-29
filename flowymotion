@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+"""A bridge that reads a Workfloy update .eml file and adds a Motion task for new lines matching a @name
+"""
+
+import argparse
+import os
+import sys
+
+from fmotion import flowymotion
+
+
+def main(arguments):
+
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-e ', '--eml', help="File of type .eml", required=False, type=str)
+    parser.add_argument('-d', help="dry run", action="store_true")
+    parser.add_argument('-w', '--workspaces', help="list workspaces", action="store_true")
+
+    args = parser.parse_args(arguments)
+
+    def usage_error(parser, msg):
+        print(f"\nERROR: {msg}\n")
+        parser.print_help()
+        sys.exit(1)
+
+    if not args.workspaces and not args.eml:
+        usage_error(parser, "emailfile (-e or --eml) required unless checking workspaces");
+
+    conf = flowymotion.WmConf("conf/flowymotion.json");
+
+    if args.workspaces:
+        workreader = flowymotion.MotionWorkspaceReader(conf)
+        workreader.readWorkspaces()
+    else:
+        reader = flowymotion.WorkflowyMailReader(conf)
+        reader.process(args.eml)
+        writer = flowymotion.MotionTaskWriter(conf, reader.get_items())
+        if not args.d:
+            writer.write_all()
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
+

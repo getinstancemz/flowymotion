@@ -11,41 +11,58 @@ class MotionTask:
     def __init__(self, name, desc):
         self.name=name
         self.desc=desc
+
     def __repr__(self):
         return f"name: {self.name} / desc: {self.desc}"
+
     def __str__(self):
         return f"name: {self.name} / desc: {self.desc}"
+
+class MotionWorkspaceReader:
+    def __init__(self, conf):
+        self.conf = conf 
+
+    def readWorkspaces(self):
+        print("\nREADING MOTION WORKSPACES\n")
+        response = requests.get("https://api.usemotion.com/v1/workspaces",
+            headers={'X-API-Key': self.conf.apikey})
+        json_response = response.json()
+        response.raise_for_status()
+        for space in json_response['workspaces']:
+            print(f"* {space['id']} {space['name']}")
 
 class MotionTaskWriter:
     def __init__(self, conf, motiontasks):
         self.conf = conf 
         self.motiontasks = motiontasks
     def write_all(self):
+        print("\nADDING TASKS\n")
         for task in self.motiontasks:
             self.write_task(task)
 
     def write_task(self, task):
         payload = {
-            "workspaceId": conf.workspaceId,
+            "workspaceId": self.conf.workspaceId,
             "name": task.name,
             "description": task.desc
         }
         response = requests.post("https://api.usemotion.com/v1/tasks",
             json=payload,
             headers={
-                'X-API-Key': conf.apikey,
+                'X-API-Key': self.conf.apikey,
                 'Content-Type': 'application/json'
             })
         response.raise_for_status()
-        print(response)
-        print(response.content)
+        response_json = response.json()
+        print(f"* added: {response_json['id']} / {response_json['name']}")
 
 class WorkflowyMailReader:
     def __init__(self, conf):
         self.items = []
         self.conf = conf
 
-    def read_mail(self, path):
+    def process(self, path):
+        print("\nPROCESSING MAIL FILE\n")
         content = self.readmail(path)
         soup = BeautifulSoup(content, 'html.parser')
         tables = self.sibling_list(soup, "table")
@@ -76,7 +93,8 @@ class WorkflowyMailReader:
         if len(desc):
             descstr = descstr + "* **parent bullets**\n"
             descstr = descstr + "  * " + ("\n  * ".join(desc))
-        print(descstr)
+        print("name: "+msg)
+        print("desc:\n" + descstr+"\n")
         self.items.append(
             MotionTask(name=msg, desc=descstr)
         );

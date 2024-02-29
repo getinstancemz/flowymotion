@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""A bridge that reads a Workfloy update .eml file and adds a Motion task for new lines matching a @name
+"""A bridge that reads a Workflowy update .eml file and adds a Motion task for new lines matching a @name
 """
 
 import argparse

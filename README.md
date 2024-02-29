@@ -11,17 +11,20 @@ Grab the environment:
 
 ```
 git clone git@github.com:getinstancemz/flowymotion.git
+cd flowymotion
 ```
 
-You can work from within this directory (`flowymotion`). If you're using Docker, then this is the directory that will be mounted so you should save your Workflowy emails in a directory here so they can be read.
+You can work from within the repo directory (`flowymotion`) that this clone will create. If you're using a Docker enviroment as described in this document (ie from `flowymotion/`) then that directory will become available to the container. You should therefore save your Workflowy emails to a subdirectory here so that they can be found by the script.
+
+
 
 ## Setup
 You will need to build the docker image and add some configuration to a file at `conf/flowymotion.json`
 
 ### Configuration
-You need an API key and a workspace id. You can generate an API key in the [Motion settings](https://app.usemotion.com/web/settings/api). If you do not already have a workspace id, Flowymotion provides a quick tool to list the available workspaces in your account -- see below for that
+You need an API key and a workspace id. You can generate an API key in the [Motion API settings](https://app.usemotion.com/web/settings/api) section. If you do not already have a workspace id, Flowymotion provides a quick tool to list the available workspaces in your account -- see below for that
 
-Copy across the sample configuration file
+Copy across the sample configuration file.
 
 ```
 cp conf/flowymotion.json.sample conf/flowymotion.json

@@ -116,9 +116,11 @@ class WorkflowyMailReader:
                 # for now we only work with the top span
                 msgstr=span.get_text()
                 # select if @name matches, and the item is marked green (ie added)
-                if (re.search('(\\s|\\b)@'+self.conf.atname+'(\\b|\\s)', msgstr) and 
+                #print(msgstr)
+                if (re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', msgstr) and 
                    span.has_attr("style") and
-                   re.search('#D5F3E5', span['style'])):
+                   re.search('#D5F3E5', span['style'])
+                   ):
                     self.paydirt(link, msgstr, parstrs)
                 lastmsg=msgstr
             elif tr.td and not tr.td.has_attr('colspan'):

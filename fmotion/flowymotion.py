@@ -13,6 +13,7 @@ class MotionTask:
         expire = now + timedelta(days=7)
         self.name=name
         self.desc=desc
+        self.startdate=now.strftime("%Y-%m-%dT%H:%M:%S")
         self.deadline=expire.strftime("%Y-%m-%dT%H:%M:%S")
 
     def __repr__(self):
@@ -48,8 +49,9 @@ class MotionTaskWriter:
             "workspaceId": self.conf.workspaceId,
             "name": task.name,
             "description": task.desc,
+            "dueDate": task.deadline,
             "autoScheduled": {
-                "startDate": task.deadline,
+                "startDate": task.startdate,
                 "deadlineType": "SOFT",
                 "schedule": "Work Hours"
             }
@@ -60,8 +62,9 @@ class MotionTaskWriter:
                 'X-API-Key': self.conf.apikey,
                 'Content-Type': 'application/json'
             })
-        response.raise_for_status()
         response_json = response.json()
+        #print(response_json)
+        response.raise_for_status()
         print(f"* added: {response_json['id']} / {response_json['name']}")
 
 class WorkflowyMailReader:

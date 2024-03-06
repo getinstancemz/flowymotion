@@ -3,14 +3,17 @@ import email
 import json 
 import quopri
 from bs4 import BeautifulSoup
-#from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 #from dateutil.parser import parse
 import re
 
 class MotionTask:
     def __init__(self, name, desc):
+        now = datetime.now()
+        expire = now + timedelta(days=7)
         self.name=name
         self.desc=desc
+        self.deadline=expire.strftime("%Y-%m-%dT%H:%M:%S")
 
     def __repr__(self):
         return f"name: {self.name} / desc: {self.desc}"
@@ -44,7 +47,12 @@ class MotionTaskWriter:
         payload = {
             "workspaceId": self.conf.workspaceId,
             "name": task.name,
-            "description": task.desc
+            "description": task.desc,
+            "autoScheduled": {
+                "startDate": task.deadline,
+                "deadlineType": "SOFT",
+                "schedule": "Work Hours"
+            }
         }
         response = requests.post("https://api.usemotion.com/v1/tasks",
             json=payload,
@@ -85,6 +93,7 @@ class WorkflowyMailReader:
         return self.items
 
     def paydirt(self, link, msg, desc):
+        
         buffer = ""
         descstr = f"""## CONTEXT from Workflowy mail
 * **workflowy link**
@@ -93,11 +102,11 @@ class WorkflowyMailReader:
         if len(desc):
             descstr = descstr + "* **parent bullets**\n"
             descstr = descstr + "  * " + ("\n  * ".join(desc))
+        task = MotionTask(name=msg, desc=descstr)
         print("name: "+msg)
+        print("deadline: " + task.deadline+"\n")
         print("desc:\n" + descstr+"\n")
-        self.items.append(
-            MotionTask(name=msg, desc=descstr)
-        );
+        self.items.append(task);
 
     def handle_table(self, table, parstrs=None):
         if not parstrs:

@@ -56,7 +56,7 @@ The script is named `flowymotion`. Here's how to run it with Docker to get a lis
 Pick a workspace -- by default there will only be one. Copy the id and paste it in to your configuration file, replacing the dummy value. Flowymotion should be fully functional now.
 
 ## Running flowymotion
-First save your email file somewhere -- if you're running with Docker then this should probably be in a directory under the cloned `flowymotion` directory, since this is mounted. This README assumes you're running from this directory. I will use the `sample/` directory which comes with the repo.
+First save your email file somewhere -- if you're running with Docker then this should probably be in a directory under the cloned `flowymotion` directory, since this is mounted. This README assumes you're running from this directory. I will use the `samples/` directory which comes with the repo.
 
 To process an email and push any found tasks to Motion, run with the `-e <path-to-email>` flag -- like this:
 

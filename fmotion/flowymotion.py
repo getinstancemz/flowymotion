@@ -13,6 +13,7 @@ class MotionTask:
         expire = now + timedelta(days=7)
         self.name=name
         self.desc=desc
+        self.startday=now.strftime("%Y-%m-%d")
         self.startdate=now.strftime("%Y-%m-%dT%H:%M:%S")
         self.deadline=expire.strftime("%Y-%m-%dT%H:%M:%S")
 
@@ -48,7 +49,7 @@ class TodoistTaskWriter:
         payload = {
             "content": task.name,
             "description": task.desc,
-            "due_date": task.deadline,
+            "due_date": task.startday,
             "duration": 60,
             "duration_unit": "minute",
         }

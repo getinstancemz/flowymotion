@@ -35,6 +35,34 @@ class MotionWorkspaceReader:
         for space in json_response['workspaces']:
             print(f"* {space['id']} {space['name']}")
 
+class TodoistTaskWriter:
+    def __init__(self, conf, tasks):
+        self.conf = conf 
+        self.tasks = tasks
+    def write_all(self):
+        print("\nADDING TASKS\n")
+        for task in self.tasks:
+            self.write_task(task)
+
+    def write_task(self, task):
+        payload = {
+            "content": task.name,
+            "description": task.desc,
+            "due_date": task.deadline,
+            "duration": 60,
+            "duration_unit": "minute",
+        }
+        response = requests.post("https://api.todoist.com/rest/v2/tasks",
+            json=payload,
+            headers={
+                'Authorization': 'Bearer '+self.conf.todoistkey,
+                'Content-Type': 'application/json'
+            })
+        response_json = response.json()
+        response.raise_for_status()
+        print(f"* added: {response_json['id']} / {response_json['content']}")
+
+
 class MotionTaskWriter:
     def __init__(self, conf, motiontasks):
         self.conf = conf 
@@ -63,7 +91,6 @@ class MotionTaskWriter:
                 'Content-Type': 'application/json'
             })
         response_json = response.json()
-        #print(response_json)
         response.raise_for_status()
         print(f"* added: {response_json['id']} / {response_json['name']}")
 
@@ -157,5 +184,7 @@ class WmConf:
         self.apikey = conf['motion']['apikey']
         self.workspaceId = conf['motion']['workspaceId']
         self.atname = conf['flowymotion']['atname']
+        self.todoistkey = conf['todoist']['apikey']
+        self.todoistdefault = conf['todoist']['default-project']
 
 

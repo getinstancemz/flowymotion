@@ -1,6 +1,6 @@
 # flowymotion
 
-Quick and dirty script to read a Workflowy email (saved as .eml) and to push any new items that mention a specific person (identified in a bullet item by a name with a leading `@` character) to Motion with some contextual information.
+Quick and dirty script to read a Workflowy email (saved as .eml) and to push any new items that mention a specific person (identified in a bullet item by a name with a leading `@` character) to Motion (or Todoist) with some contextual information.
 
 These instructions assume you're using Docker to run this though of course it's not necessary. You can find required packages in `dockerdir/requirements.txt`.
 
@@ -73,12 +73,14 @@ If you want to just check the email parser, then you can run with the dry run fl
 
 This will read the email and compile the tasks but won't write them to Motion.
 
+**New** If you'd rather use Todoist, you can now do that too -- make sure your api key is added to the configuration file (see the sample) and run with the `-t` flag.
+
 ### Getting help.
 Run with the `-h` flag:
 
 ```
 $ ./bin/drun flowymotion -h
-usage: flowymotion [-h] [-e  EML] [-d] [-w]
+usage: flowymotion [-h] [-e  EML] [-d] [-t] [-w]
 
 A bridge that reads a Workflowy update .eml file and adds a Motion task for new lines matching a @name
 
@@ -86,6 +88,7 @@ optional arguments:
   -h, --help          show this help message and exit
   -e  EML, --eml EML  File of type .eml
   -d                  dry run
+  -t                  run in todoist mode
   -w, --workspaces    list workspaces
 ```
 

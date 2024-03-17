@@ -5,5 +5,9 @@
     "motion": {
         "apikey": "xxxxxxx", 
         "workspaceId": "xxxxxxx"
-    }
+    },
+    "todoist": {
+        "apikey": "xxxxxxx",
+        "default-project": "xxxx"
+    } 
 }

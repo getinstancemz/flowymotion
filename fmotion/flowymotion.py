@@ -95,6 +95,48 @@ class MotionTaskWriter:
         response.raise_for_status()
         print(f"* added: {response_json['id']} / {response_json['name']}")
 
+class TextReader:
+    def __init__(self, conf):
+        self.items = []
+        self.conf = conf
+
+    def process(self, path):
+        print("\nPROCESSING Text FILE\n")
+        content = self.readfile(path)
+
+    def readfile(self, path):
+            
+        with open(path) as text_file:
+            lines = text_file.read().splitlines()
+        idx=0
+        for line in lines:
+            start=idx-2
+            end=idx+2
+            start = 0 if start < 0 else start
+            end = len(lines)-1 if end >= len(lines)-1 else end
+            if re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', line):
+                self.paydirt(line, lines[start:end])
+            idx=idx+1
+        #print(self.items)
+
+    def paydirt(self, msg, desc):
+        buffer = ""
+        descstr = f"""## CONTEXT from Text File
+"""
+        if len(desc):
+            descstr = descstr + "* **extract**\n"
+            descstr = descstr + "  * " + ("\n  * ".join(desc))
+        task = MotionTask(name=msg, desc=descstr)
+        print("name: "+msg)
+        print("deadline: " + task.deadline+"\n")
+        print("desc:\n" + descstr+"\n")
+        self.items.append(task);
+
+    def get_items(self):
+        return self.items
+
+
+
 class WorkflowyMailReader:
     def __init__(self, conf):
         self.items = []

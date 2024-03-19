@@ -80,13 +80,14 @@ Run with the `-h` flag:
 
 ```
 $ ./bin/drun flowymotion -h
-usage: flowymotion [-h] [-e  EML] [-d] [-t] [-w]
+usage: flowymotion [-h] [-e  EML] [-l LNS] [-d] [-t] [-w]
 
-A bridge that reads a Workflowy update .eml file and adds a Motion task for new lines matching a @name
+A bridge that reads a text file or a Workflowy update .eml file and adds a Motion/Todoist task for new lines matching a @name
 
 optional arguments:
   -h, --help          show this help message and exit
-  -e  EML, --eml EML  File of type .eml
+  -e  EML, --eml EML  Read from workflowy .eml
+  -l LNS, --lns LNS   read lines from text file
   -d                  dry run
   -t                  run in todoist mode
   -w, --workspaces    list workspaces

@@ -29,8 +29,11 @@ class MotionWorkspaceReader:
 
     def readWorkspaces(self):
         print("\nREADING MOTION WORKSPACES\n")
+        if not self.conf.motion_configured():
+            print("Can't check Motion for workspaces -- not configured\n")
+            return
         response = requests.get("https://api.usemotion.com/v1/workspaces",
-            headers={'X-API-Key': self.conf.apikey})
+            headers={'X-API-Key': self.conf.motionkey})
         json_response = response.json()
         response.raise_for_status()
         for space in json_response['workspaces']:
@@ -41,7 +44,10 @@ class TodoistTaskWriter:
         self.conf = conf 
         self.tasks = tasks
     def write_all(self):
-        print("\nADDING TASKS\n")
+        print("\nADDING TASKS - Todoist\n")
+        if not self.conf.todoist_configured():
+            print("Can't write to Todoist -- not configured\n")
+            return
         for task in self.tasks:
             self.write_task(task)
 
@@ -69,13 +75,16 @@ class MotionTaskWriter:
         self.conf = conf 
         self.motiontasks = motiontasks
     def write_all(self):
-        print("\nADDING TASKS\n")
+        print("\nADDING TASKS -- Motion\n")
+        if not self.conf.motion_configured() or not self.conf.motiondefault:
+            print("Can't write to Motion -- not configured\n")
+            return
         for task in self.motiontasks:
             self.write_task(task)
 
     def write_task(self, task):
         payload = {
-            "workspaceId": self.conf.workspaceId,
+            "workspaceId": self.conf.motiondefault,
             "name": task.name,
             "description": task.desc,
             "dueDate": task.deadline,
@@ -88,7 +97,7 @@ class MotionTaskWriter:
         response = requests.post("https://api.usemotion.com/v1/tasks",
             json=payload,
             headers={
-                'X-API-Key': self.conf.apikey,
+                'X-API-Key': self.conf.motionkey,
                 'Content-Type': 'application/json'
             })
         response_json = response.json()
@@ -125,7 +134,7 @@ class TextReader:
 """
         if len(desc):
             descstr = descstr + "* **extract**\n"
-            descstr = descstr + "  * " + ("\n  * ".join(desc))
+            descstr = descstr + "> " + ("\n  > ".join(desc))
         task = MotionTask(name=msg, desc=descstr)
         print("name: "+msg)
         print("deadline: " + task.deadline+"\n")
@@ -224,10 +233,27 @@ class WmConf:
     def __init__(self, path):
         with open(path) as jfile:
             conf = json.load(jfile) 
-        self.apikey = conf['motion']['apikey']
-        self.workspaceId = conf['motion']['workspaceId']
         self.atname = conf['flowymotion']['atname']
-        self.todoistkey = conf['todoist']['apikey']
-        self.todoistdefault = conf['todoist']['default-project']
 
+        self.motionkey = None
+        self.motiondefault = None
+        if 'motion' in conf.keys():
+            self.motionkey = conf['motion']['apikey']
+            self.motiondefault = conf['motion']['workspaceId']
+
+        self.todoistkey = None
+        self.todoistdefalut = None
+        if 'todoist' in conf.keys():
+            self.todoistkey = conf['todoist']['apikey']
+            self.todoistdefault = conf['todoist']['default-project']
+
+    def motion_configured(self):
+        if self.motionkey:
+            return True
+        return False
+
+    def todoist_configured(self):
+        if self.todoistkey:
+            return True
+        return False
 

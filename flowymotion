@@ -15,11 +15,12 @@ def main(arguments):
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('-e ', '--eml', help="Read from workflowy .eml", required=False, type=str)
-    parser.add_argument('-l', '--lns', help="read lines from text file", required=False, type=str)
-    parser.add_argument('-d', help="dry run", action="store_true")
-    parser.add_argument('-t', help="run in todoist mode", action="store_true")
-    parser.add_argument('-w', '--workspaces', help="list workspaces", action="store_true")
+    parser.add_argument('-e', '--eml', help="Read from workflowy .eml", required=False, type=str)
+    parser.add_argument('-l', '--lns', help="Read lines from text file", required=False, type=str)
+    parser.add_argument('-d', help="Dry run", action="store_true")
+    parser.add_argument('-t', help="Write tasks to Todoist", action="store_true")
+    parser.add_argument('-m', help="Write tasks to Motion (default)", action="store_true")
+    parser.add_argument('-w', '--workspaces', help="List Motion workspaces", action="store_true")
 
     args = parser.parse_args(arguments)
 
@@ -46,12 +47,14 @@ def main(arguments):
             reader = flowymotion.WorkflowyMailReader(conf)
         reader.process(path)
         #raise SystemExit
+        writers=[]
         if args.t:
-            writer = flowymotion.TodoistTaskWriter(conf, reader.get_items())
-        else:
-            writer = flowymotion.MotionTaskWriter(conf, reader.get_items())
+            writers.append(flowymotion.TodoistTaskWriter(conf, reader.get_items()))
+        if args.m or not args.t:
+            writers.append(flowymotion.MotionTaskWriter(conf, reader.get_items()))
         if not args.d:
-            writer.write_all()
+            for writer in writers:
+                writer.write_all()
 
 if __name__ == '__main__':
     main(sys.argv[1:])

@@ -16,13 +16,13 @@ cd flowymotion
 
 You can work from within the repo directory (`flowymotion`) that this clone will create. If you're using a Docker enviroment as described in this document (ie from `flowymotion/`) then that directory will become available to the container. You should therefore save your Workflowy emails to a subdirectory here so that they can be found by the script.
 
-
-
 ## Setup
 You will need to build the docker image and add some configuration to a file at `conf/flowymotion.json`
 
 ### Configuration
-You need an API key and a workspace id. You can generate an API key in the [Motion API settings](https://app.usemotion.com/web/settings/api) section. If you do not already have a workspace id, Flowymotion provides a quick tool to list the available workspaces in your account -- see below for that
+You need an API key and a workspace id from **Motion**. You can generate an API key in the [Motion API settings](https://app.usemotion.com/web/settings/api) section. If you do not already have a workspace id, Flowymotion provides a quick tool to list the available workspaces in your account -- see below for that
+
+If you intend to write to **Todoist** you'll also need a key. Again, you can find this in [Settings](https://app.todoist.com/app/settings/integrations/developer). The configuration sample also specifies a default project -- this field is not used at present
 
 Copy across the sample configuration file.
 
@@ -30,7 +30,7 @@ Copy across the sample configuration file.
 cp conf/flowymotion.json.sample conf/flowymotion.json
 ```
 
-Edit the new file -- add your API key to the correct field. If you do not yet have a workspace id, leave the dummy in place for now.
+Edit the new file -- add your API keys to the correct respective fields. If you do not yet have a Motion workspace id, leave the dummy in place for now.
 
 Change the `atname` field to the `@name` you wish the script to search for in Workflow reports in order to generate Motion tasks (do not add `@` in the configuration file -- the script adds that when searching).
 
@@ -44,7 +44,7 @@ You will only need to do this once (at least until you clear Docker images).
 
 This will create a Python image and install requirements for the script. Once this is done you will be able to run the python executable with `./bin/drun`.
 
-### Get a Workspace ID
+### Get a Motion Workspace ID
 If you haven't yet got one of these then the system is half-configured. You can already run the script to get a list of available workspaces if you have added your API key.
 
 The script is named `flowymotion`. Here's how to run it with Docker to get a list of workspaces.
@@ -79,18 +79,19 @@ This will read the email and compile the tasks but won't write them to Motion.
 Run with the `-h` flag:
 
 ```
-$ ./bin/drun flowymotion -h
-usage: flowymotion [-h] [-e  EML] [-l LNS] [-d] [-t] [-w]
+$ ./bin/drun flowymotion  -h
+usage: flowymotion [-h] [-e  EML] [-l LNS] [-d] [-t] [-m] [-w]
 
 A bridge that reads a text file or a Workflowy update .eml file and adds a Motion/Todoist task for new lines matching a @name
 
 optional arguments:
   -h, --help          show this help message and exit
-  -e  EML, --eml EML  Read from workflowy .eml
-  -l LNS, --lns LNS   read lines from text file
-  -d                  dry run
-  -t                  run in todoist mode
-  -w, --workspaces    list workspaces
+  -e EML, --eml EML   Read from workflowy .eml
+  -l LNS, --lns LNS   Read lines from text file
+  -d                  Dry run
+  -t                  Write tasks to Todoist
+  -m                  Write tasks to Motion (default)
+  -w, --workspaces    List Motion workspaces
 ```
 
 

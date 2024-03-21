@@ -104,7 +104,15 @@ class MotionTaskWriter:
         response.raise_for_status()
         print(f"* added: {response_json['id']} / {response_json['name']}")
 
-class TextReader:
+class Reader:
+    def match_atname(self, atname, teststr):
+        atnames=atname.split(",")
+        for atname in atnames:
+            if re.search(r'(^|\s|\b)@' + atname + r'(\b|\s|$)', teststr, re.I):
+                return True
+        return False
+
+class TextReader(Reader):
     def __init__(self, conf):
         self.items = []
         self.conf = conf
@@ -123,7 +131,8 @@ class TextReader:
             end=idx+3
             start = 0 if start < 0 else start
             end = len(lines) if end > len(lines)-1 else end
-            if re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', line, re.I):
+            #if re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', line, re.I):
+            if self.match_atname(self.conf.atname, line):
                 #print(f"{start}:{idx}:{end}")
                 self.paydirt(line, lines[start:end])
             idx=idx+1
@@ -146,7 +155,7 @@ class TextReader:
     def get_items(self):
         return self.items
 
-class WorkflowyMailReader:
+class WorkflowyMailReader(Reader):
     def __init__(self, conf):
         self.items = []
         self.conf = conf
@@ -208,7 +217,8 @@ class WorkflowyMailReader:
                 msgstr=span.get_text()
                 # select if @name matches, and the item is marked green (ie added)
                 #print(msgstr)
-                if (re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', msgstr, re.I) and 
+                #if (re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', msgstr, re.I) and 
+                if (self.match_atname(self.conf.atname, msgstr) and 
                    span.has_attr("style") and
                    re.search('#D5F3E5', span['style'])
                    ):

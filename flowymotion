@@ -15,6 +15,7 @@ def main(arguments):
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-a', '--atn', help="find names (optionally comma separated)", required=False, type=str)
     parser.add_argument('-e', '--eml', help="Read from workflowy .eml", required=False, type=str)
     parser.add_argument('-l', '--lns', help="Read lines from text file", required=False, type=str)
     parser.add_argument('-d', help="Dry run", action="store_true")
@@ -34,7 +35,9 @@ def main(arguments):
     
 
     conf = flowymotion.WmConf("conf/flowymotion.json");
-
+    
+    if args.atn:
+        conf.atname=args.atn
     if args.workspaces:
         workreader = flowymotion.MotionWorkspaceReader(conf)
         workreader.readWorkspaces()

@@ -120,10 +120,11 @@ class TextReader:
         idx=0
         for line in lines:
             start=idx-2
-            end=idx+2
+            end=idx+3
             start = 0 if start < 0 else start
-            end = len(lines)-1 if end >= len(lines)-1 else end
-            if re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', line):
+            end = len(lines) if end > len(lines)-1 else end
+            if re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', line, re.I):
+                #print(f"{start}:{idx}:{end}")
                 self.paydirt(line, lines[start:end])
             idx=idx+1
         #print(self.items)
@@ -134,7 +135,8 @@ class TextReader:
 """
         if len(desc):
             descstr = descstr + "* **extract**\n"
-            descstr = descstr + "> " + ("\n  > ".join(desc))
+            descstr = descstr + "> " + ("\n> ".join(desc))
+        msg = re.sub(r'^\s*\*\s+', '', msg)
         task = MotionTask(name=msg, desc=descstr)
         print("name: "+msg)
         print("deadline: " + task.deadline+"\n")
@@ -143,8 +145,6 @@ class TextReader:
 
     def get_items(self):
         return self.items
-
-
 
 class WorkflowyMailReader:
     def __init__(self, conf):
@@ -208,7 +208,7 @@ class WorkflowyMailReader:
                 msgstr=span.get_text()
                 # select if @name matches, and the item is marked green (ie added)
                 #print(msgstr)
-                if (re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', msgstr) and 
+                if (re.search('(^|\\s|\\b)@'+self.conf.atname+'(\\b|\\s|$)', msgstr, re.I) and 
                    span.has_attr("style") and
                    re.search('#D5F3E5', span['style'])
                    ):
@@ -230,10 +230,13 @@ class WorkflowyMailReader:
         return ret
 
 class WmConf:
-    def __init__(self, path):
+    def __init__(self, path, handle=None):
         with open(path) as jfile:
             conf = json.load(jfile) 
-        self.atname = conf['flowymotion']['atname']
+        if  not handle:
+            self.atname = conf['flowymotion']['atname']
+        else:
+            self.atname = handle
 
         self.motionkey = None
         self.motiondefault = None
